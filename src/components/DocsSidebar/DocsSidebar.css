@@ -1,0 +1,54 @@
+.docs-sidebar {
+  width: 280px;
+  height: calc(100vh - var(--header-height));
+  position: sticky;
+  top: var(--header-height);
+  padding: 40px 24px;
+  overflow-y: auto;
+  border-right: 1px solid var(--glass-border);
+  background: var(--bg-white);
+}
+
+.docs-nav-section {
+  margin-bottom: 32px;
+}
+
+.docs-nav-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+
+.docs-nav-list {
+  list-style: none;
+}
+
+.docs-nav-item {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+}
+
+.docs-nav-item:hover {
+  background: rgba(5, 150, 105, 0.05);
+  color: var(--primary);
+}
+
+.docs-nav-item.active {
+  background: var(--primary-glow);
+  color: var(--primary);
+}
+
+@media (max-width: 992px) {
+  .docs-sidebar {
+    display: none; /* Hide on mobile for now, can add a hamburger menu later */
+  }
+}

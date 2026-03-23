@@ -1,0 +1,242 @@
+.workspace-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--background);
+}
+
+.workspace-main {
+  flex-grow: 1;
+  margin-left: 260px;
+  padding: 48px;
+}
+
+.workspace-header {
+  margin-bottom: 40px;
+}
+
+.workspace-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.workspace-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* Dashboard Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: var(--surface);
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.stat-trend {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.trend-up {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--accent);
+}
+
+/* API Key Section */
+.workspace-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.btn-create {
+  background: var(--primary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-create:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.data-card {
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.api-key-list {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.api-key-list th {
+  background: var(--surface-hover);
+  padding: 16px 24px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.api-key-list td {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--glass-border);
+  font-size: 0.95rem;
+}
+
+.key-code {
+  font-family: 'Geist Mono', monospace;
+  background: var(--bg-soft);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+}
+
+.btn-icon:hover {
+  background: var(--bg-soft);
+}
+
+/* Usage Charts placeholder styles */
+.usage-chart-container {
+  height: 300px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 20px 0;
+  border-bottom: 2px solid var(--glass-border);
+  margin-bottom: 24px;
+}
+
+.chart-bar-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-bar {
+  width: 100%;
+  background: var(--primary);
+  border-radius: 6px 6px 0 0;
+  transition: all 0.3s ease;
+  min-height: 4px;
+}
+
+.chart-bar:hover {
+  background: var(--accent);
+  filter: brightness(1.1);
+}
+
+.chart-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Billing specific */
+.credit-card {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  padding: 32px;
+  border-radius: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 10px 30px var(--primary-glow);
+}
+
+.credit-amount {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 12px 0;
+}
+
+.plan-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+}
+
+/* Settings Forms */
+.settings-section {
+  margin-bottom: 48px;
+  max-width: 600px;
+}
+
+.settings-group {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.settings-group:last-child {
+  border-bottom: none;
+}
+
+.settings-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+@media (max-width: 992px) {
+  .workspace-main {
+    margin-left: 0;
+    padding: 32px 20px;
+  }
+}
