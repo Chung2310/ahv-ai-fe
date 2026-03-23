@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import BackgroundEffects from "@/components/BackgroundEffects/BackgroundEffects";
-import PlexusBackground from '@/components/BackgroundEffects/PlexusBackground';
 import SmoothScroll from '@/components/Effects/SmoothScroll';
-import CustomCursor from '@/components/Effects/CustomCursor';
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -13,8 +10,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "PiAPI | AI-Powered API Platform",
-  description: "The most powerful AI APIs for developers. Integrate state-of-the-art AI models in minutes.",
+  title: "AHV AI | Nền tảng API AI mạnh mẽ",
+  description: "Hệ sinh thái AI mạnh mẽ nhất dành cho nhà phát triển. Tích hợp các mô hình AI tiên tiến chỉ trong vài phút.",
 };
 
 export default function RootLayout({
@@ -25,9 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={plusJakartaSans.variable}>
       <body className={plusJakartaSans.className}>
-        <CustomCursor />
         <SmoothScroll>
-          <PlexusBackground />
           {children}
         </SmoothScroll>
       </body>

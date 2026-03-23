@@ -7,34 +7,32 @@ import './Header.css';
 
 const Header = () => {
   const pathname = usePathname();
+  
   return (
     <header className="header glass">
       <div className="container header-content">
-        <div className="logo">
-          <span className="logo-icon">π</span>
-          <span className="logo-text">PiAPI</span>
-        </div>
         <div className="nav-left">
-          <a href="/" className="logo">
-            Pi<span className="gradient-text">API</span>
-          </a>
+          <Link href="/" className="logo">
+            <span className="logo-icon">A</span>
+            <span className="logo-text">AHV <span className="gradient-text">AI</span></span>
+          </Link>
           <div className="status-indicator">
             <span className="status-dot"></span>
-            SYS_ONLINE
+            HỆ THỐNG ONLINE
           </div>
         </div>
 
         <nav className="nav-links">
-          <Link href="/models" className={pathname === '/models' ? 'active' : ''}>Models</Link>
-          <Link href="/playground" className={pathname === '/playground' ? 'active' : ''}>Playground</Link>
-          <Link href="/docs" className={pathname === '/docs' ? 'active' : ''}>Docs</Link>
-          <a href="#pricing" className="nav-link">Pricing</a>
+          <Link href="/models" className={pathname === '/models' ? 'active' : ''}>Mô hình</Link>
+          <Link href="/playground" className={pathname === '/playground' ? 'active' : ''}>Trải nghiệm</Link>
+          <Link href="/docs" className={pathname === '/docs' ? 'active' : ''}>Tài liệu</Link>
+          <a href="#pricing" className="nav-link">Bảng giá</a>
           <a href="#blog" className="nav-link">Blog</a>
         </nav>
         
         <div className="header-actions">
-          <a href="/login" className="btn-secondary">Log In</a>
-          <a href="/register" className="btn-primary">Sign Up</a>
+          <Link href="/login" className="btn-secondary">Đăng nhập</Link>
+          <Link href="/register" className="btn-primary">Đăng ký</Link>
         </div>
       </div>
     </header>
