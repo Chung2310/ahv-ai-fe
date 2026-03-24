@@ -7,22 +7,18 @@ const Footer = () => {
     <footer className="footer">
       <div className="container footer-grid">
         <div className="footer-brand">
-          <div className="logo">
+          <Link href="/" className="logo">
             <span className="logo-icon"></span>
             <span className="logo-text">AHV <span className="gradient-text">AI</span></span>
-          </div>
+          </Link>
           <p className="footer-desc">
             The world's most powerful AI API platform. 
             Scaling intelligence for the next generation of applications.
           </p>
-          <div className="social-links">
-            <a href="#" className="social-link">𝕏</a>
-            <a href="#" className="social-link">GitHub</a>
-            <a href="#" className="social-link">Discord</a>
-          </div>
-          <button type="submit" className="subscribe-btn skew-btn">
-            <span>Subscribe</span>
-          </button>
+          
+          <Link href="/register" className="subscribe-btn skew-btn">
+            <span>Get Started</span>
+          </Link>
         </div>
         <div className="footer-col">
           <h4>Products</h4>
@@ -36,9 +32,9 @@ const Footer = () => {
         <div className="footer-col">
           <h4>Company</h4>
           <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Careers</a></li>
+            <li><Link href="/#about">About Us</Link></li>
+            <li><Link href="/blog">Blog</Link></li>
+            <li><Link href="/#careers">Careers</Link></li>
           </ul>
         </div>
         <div className="footer-col">

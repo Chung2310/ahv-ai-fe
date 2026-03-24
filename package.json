@@ -3,14 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/start.js dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node scripts/start.js start",
     "lint": "eslint"
   },
   "dependencies": {
     "@studio-freight/lenis": "^1.0.42",
+    "@types/joi": "^17.2.2",
+    "axios": "^1.13.6",
+    "cross-env": "^10.1.0",
+    "dotenv-cli": "^11.0.0",
     "framer-motion": "^12.38.0",
+    "joi": "^18.1.1",
     "next": "16.2.1",
     "react": "19.2.4",
     "react-dom": "19.2.4"

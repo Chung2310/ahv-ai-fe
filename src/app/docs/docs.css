@@ -245,13 +245,61 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
   overflow: hidden;
+  z-index: 1;
+}
+
+.status-item.interactive::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    transparent, 
+    #ff0000, 
+    #ff7300, 
+    #fffb00, 
+    #48ff00, 
+    #00ffd5, 
+    #002bff, 
+    #7a00ff, 
+    #ff00c8, 
+    transparent
+  );
+  animation: rotate-rgb 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -2;
+}
+
+.status-item.interactive::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: rgba(20, 20, 20, 0.95);
+  border-radius: 7px;
+  z-index: -1;
+  transition: background 0.3s;
+}
+
+@keyframes rotate-rgb {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .status-item.interactive:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--accent-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  border-color: transparent;
+}
+
+.status-item.interactive:hover::before {
+  opacity: 1;
+}
+
+.status-item.interactive:hover::after {
+  background: rgba(40, 40, 40, 0.9);
 }
 
 .status-item.interactive.active {

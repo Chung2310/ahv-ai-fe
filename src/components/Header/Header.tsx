@@ -4,10 +4,52 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Magnetic from '@/components/Effects/Magnetic';
+import api from '@/lib/api';
 import './Header.css';
 
 const Header = () => {
   const pathname = usePathname();
+  const [user, setUser] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        setUser(null);
+        return;
+      }
+
+      // Initial state from localStorage for faster UI
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (e) {}
+      }
+
+      try {
+        const response = await api.get('/api/v1/users/me');
+        if (response.data.success) {
+          const freshUser = response.data.data;
+          setUser(freshUser);
+          localStorage.setItem('user', JSON.stringify(freshUser));
+        }
+      } catch (err: any) {
+        console.error('Failed to fetch user', err);
+        // If unauthorized, clear storage
+        if (err.response?.status === 401) {
+          localStorage.clear();
+          setUser(null);
+        }
+      }
+    };
+
+    fetchUser();
+    
+    // Listen for storage changes (for cross-tab sync)
+    window.addEventListener('storage', fetchUser);
+    return () => window.removeEventListener('storage', fetchUser);
+  }, []);
   
   return (
     <header className="header glass">
@@ -34,8 +76,27 @@ const Header = () => {
         </nav>
         
         <div className="header-actions">
-          <Magnetic><Link href="/login" className="btn-secondary">Login</Link></Magnetic>
-          <Magnetic><Link href="/register" className="btn-primary">Register</Link></Magnetic>
+          {user ? (
+            <Magnetic>
+              <Link href="/profile" className="user-avatar-container">
+                <div className="avatar-wrapper">
+                  {user?.avatar ? (
+                    <img src={user.avatar} alt={user?.username || 'User'} className="user-avatar-img" />
+                  ) : (
+                    <div className="user-avatar-placeholder">
+                      {user?.username?.charAt(0) || 'U'}
+                    </div>
+                  )}
+                </div>
+                <span className="user-name-min">{user?.username || 'User'}</span>
+              </Link>
+            </Magnetic>
+          ) : (
+            <>
+              <Magnetic><Link href="/login" className="btn-secondary">Login</Link></Magnetic>
+              <Magnetic><Link href="/register" className="btn-primary">Register</Link></Magnetic>
+            </>
+          )}
         </div>
       </div>
     </header>

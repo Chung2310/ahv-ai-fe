@@ -155,7 +155,7 @@ export default function Hero() {
                 <div key={i} className="sphere-ring"></div>
               ))}
               <div className="sphere-content">
-                <span className="glow-text">AI</span>
+                <span className="glow-text">AHV AI</span>
               </div>
             </motion.div>
             

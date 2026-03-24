@@ -8,23 +8,67 @@ import Magnetic from '@/components/Effects/Magnetic';
 import { MODELS } from '@/data/models';
 import './workspace.css';
 
+import api from '@/lib/api';
+import './workspace.css';
+
+import { useRouter } from 'next/navigation';
+
 export default function WorkspacePage() {
+  const router = useRouter();
   const [selectedModel, setSelectedModel] = useState(MODELS[0].id);
   const [prompt, setPrompt] = useState('');
   const [generating, setGenerating] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
 
   const fullPrompt = 'An astronaut riding a horse on the moon, cinematic anime style';
 
   React.useEffect(() => {
-    let i = 0;
-    const interval = setInterval(() => {
-      setPrompt(fullPrompt.slice(0, i));
-      i++;
-      if (i > fullPrompt.length) clearInterval(interval);
-    }, 30);
-    return () => clearInterval(interval);
-  }, []);
+    const initWorkspace = async () => {
+      // Check authentication
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      // Initial state from localStorage for faster UI
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (e) {}
+      }
+
+      // Fetch fresh user data
+      try {
+        const response = await api.get('/api/v1/users/me');
+        if (response.data.success) {
+          const freshUser = response.data.data;
+          setUser(freshUser);
+          localStorage.setItem('user', JSON.stringify(freshUser));
+        }
+      } catch (err: any) {
+        console.error('Failed to fetch user in Workspace', err);
+        if (err.response?.status === 401) {
+          localStorage.clear();
+          router.push('/login');
+          return;
+        }
+      }
+
+      // Typewriter effect
+      let i = 0;
+      const interval = setInterval(() => {
+        setPrompt(fullPrompt.slice(0, i));
+        i++;
+        if (i > fullPrompt.length) clearInterval(interval);
+      }, 30);
+      return () => clearInterval(interval);
+    };
+
+    initWorkspace();
+  }, [router]);
 
   const handleGenerate = () => {
     setGenerating(true);
@@ -58,7 +102,7 @@ export default function WorkspacePage() {
               <span className="logo-text">AHV <span className="gradient-text">AI</span> <span className="workspace-badge">Workspace</span></span>
             </Link>
           </div>
-          <div className="header-right"></div>
+          
         </div>
 
         <div className="workspace-container">
