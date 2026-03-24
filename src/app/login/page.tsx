@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image'; // Added Image import
 import './auth.css';
 
 export default function LoginPage() {
@@ -18,11 +19,11 @@ export default function LoginPage() {
         
         <div className="social-auth">
           <button className="social-btn">
-            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" />
+            <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={20} height={20} />
             Continue with Google
           </button>
           <button className="social-btn">
-            <img src="https://www.svgrepo.com/show/475654/github-color.svg" alt="GitHub" />
+            <Image src="https://www.svgrepo.com/show/475654/github-color.svg" alt="GitHub" width={20} height={20} />
             Continue with GitHub
           </button>
         </div>

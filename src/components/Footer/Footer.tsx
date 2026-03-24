@@ -28,7 +28,7 @@ const Footer = () => {
           <h4>Sản phẩm</h4>
           <ul>
             <li><Link href="/models">Mô hình AI</Link></li>
-            <li><Link href="/playground">Playground</Link></li>
+            <li><Link href="/workspace">Workspace</Link></li>
             <li><Link href="/docs">Tài liệu API</Link></li>
             <li><Link href="/pricing">Bảng giá</Link></li>
           </ul>

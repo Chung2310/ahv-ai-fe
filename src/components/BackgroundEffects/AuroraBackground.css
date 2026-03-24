@@ -1,0 +1,91 @@
+.aurora-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #050505;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.aurora-blob {
+  position: absolute;
+  width: 60vw;
+  height: 60vh;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.35;
+  will-change: transform;
+  mix-blend-mode: screen;
+}
+
+.aurora-1 {
+  background: radial-gradient(circle, #00f3ff 0%, transparent 70%);
+  top: -10%;
+  left: -10%;
+  animation: aurora-move-1 8s infinite alternate cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+.aurora-2 {
+  background: radial-gradient(circle, #00ff88 0%, transparent 70%);
+  bottom: -10%;
+  right: -10%;
+  animation: aurora-move-2 10s infinite alternate cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+.aurora-3 {
+  background: radial-gradient(circle, #ff00ff 0%, transparent 70%);
+  top: 40%;
+  right: -5%;
+  animation: aurora-move-3 12s infinite alternate-reverse cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+.aurora-4 {
+  background: radial-gradient(circle, #5b21b6 0%, transparent 70%);
+  bottom: 20%;
+  left: 20%;
+  animation: aurora-move-1 15s infinite alternate-reverse cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+
+.aurora-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+  opacity: 0.05;
+}
+
+.aurora-noise {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.02;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+@keyframes aurora-move-1 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  100% { transform: translate(15%, 10%) scale(1.1) rotate(5deg); }
+}
+
+@keyframes aurora-move-2 {
+  0% { transform: translate(0, 0) scale(1.1) rotate(0deg); }
+  100% { transform: translate(-10%, -15%) scale(1) rotate(-8deg); }
+}
+
+@keyframes aurora-move-3 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  100% { transform: translate(-5%, 20%) scale(1.2) rotate(10deg); }
+}

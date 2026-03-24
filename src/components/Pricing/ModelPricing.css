@@ -1,0 +1,78 @@
+.model-pricing-section {
+  padding: 80px 0;
+  position: relative;
+}
+
+.model-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.tab-btn {
+  padding: 10px 24px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  border-color: var(--primary);
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  color: #000;
+  border-color: var(--primary);
+}
+
+.model-table-wrapper {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.model-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.model-table th {
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+
+.model-table td {
+  padding: 18px 24px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.model-table tr:last-child td {
+  border-bottom: none;
+}
+
+.price-cell {
+  color: var(--primary) !important;
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .model-tabs {
+    flex-wrap: wrap;
+  }
+}

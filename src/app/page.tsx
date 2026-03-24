@@ -13,39 +13,38 @@ export default function Home() {
       <Header />
       <Hero />
       
-      <Reveal width="100%">
-        <section className="features-section" id="models">
-          <div className="container">
-            <div className="section-header">
+      <section className="features-section" id="models">
+        <div className="container">
+          <div className="section-header">
+            <Reveal width="100%" direction="up" distance={30}>
               <h2 className="section-title">One API. <span className="gradient-text">Infinite Possibilities.</span></h2>
+            </Reveal>
+            <Reveal width="100%" direction="up" distance={20} delay={0.3}>
               <p className="section-subtitle">Choose from a curated catalog of world-class AI models specifically optimized for production.</p>
-            </div>
-            <FeatureCards />
+            </Reveal>
           </div>
-        </section>
-      </Reveal>
+          <FeatureCards />
+        </div>
+      </section>
 
-      <Reveal width="100%">
-        <section className="section section-dark">
-          <div className="container">
+      <section className="section section-dark">
+        <div className="container">
+          <Reveal width="100%" direction="right" distance={40}>
             <h2 className="section-title">Developers <span className="gradient-text">First</span></h2>
+          </Reveal>
+          <Reveal width="100%" direction="right" distance={30} delay={0.3}>
             <p className="section-subtitle">Integrate into your codebase in minutes, not weeks.</p>
+          </Reveal>
+          <Reveal width="100%" direction="up" distance={50} delay={0.5}>
             <DeveloperSection />
-          </div>
-        </section>
-      </Reveal>
+          </Reveal>
+        </div>
+      </section>
 
-      <Reveal width="100%">
-        <section id="pricing" className="section">
-          <div className="container">
-            <h2 className="section-title">Simple <span className="gradient-text">Pricing</span></h2>
-            <p className="section-subtitle">Flexible plans designed to grow with your application's needs.</p>
-            <Pricing />
-          </div>
-        </section>
-      </Reveal>
+      <Pricing />
 
       <Footer />
     </main>
   );
 }
+

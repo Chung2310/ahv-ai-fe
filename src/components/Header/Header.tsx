@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Magnetic from '@/components/Effects/Magnetic';
 import './Header.css';
 
 const Header = () => {
@@ -12,10 +13,12 @@ const Header = () => {
     <header className="header glass">
       <div className="container header-content">
         <div className="nav-left">
-          <Link href="/" className="logo">
-            <span className="logo-icon">A</span>
-            <span className="logo-text">AHV <span className="gradient-text">AI</span></span>
-          </Link>
+          <Magnetic>
+            <Link href="/" className="logo">
+              <span className="logo-icon">A</span>
+              <span className="logo-text">AHV <span className="gradient-text">AI</span></span>
+            </Link>
+          </Magnetic>
           <div className="status-indicator">
             <span className="status-dot"></span>
             HỆ THỐNG ONLINE
@@ -23,20 +26,21 @@ const Header = () => {
         </div>
 
         <nav className="nav-links">
-          <Link href="/models" className={pathname === '/models' ? 'active' : ''}>Mô hình</Link>
-          <Link href="/playground" className={pathname === '/playground' ? 'active' : ''}>Trải nghiệm</Link>
-          <Link href="/docs" className={pathname === '/docs' ? 'active' : ''}>Tài liệu</Link>
-          <a href="#pricing" className="nav-link">Bảng giá</a>
-          <a href="#blog" className="nav-link">Blog</a>
+          <Magnetic><Link href="/models" className={pathname === '/models' ? 'active' : ''}>Mô hình</Link></Magnetic>
+          <Magnetic><Link href="/workspace" className={pathname === '/workspace' ? 'active' : ''}>Trải nghiệm</Link></Magnetic>
+          <Magnetic><Link href="/docs" className={pathname === '/docs' ? 'active' : ''}>Tài liệu</Link></Magnetic>
+          <Magnetic><Link href="/pricing" className="nav-link">Bảng giá</Link></Magnetic>
+          <Magnetic><Link href="/blog" className="nav-link">Blog</Link></Magnetic>
         </nav>
         
         <div className="header-actions">
-          <Link href="/login" className="btn-secondary">Đăng nhập</Link>
-          <Link href="/register" className="btn-primary">Đăng ký</Link>
+          <Magnetic><Link href="/login" className="btn-secondary">Đăng nhập</Link></Magnetic>
+          <Magnetic><Link href="/register" className="btn-primary">Đăng ký</Link></Magnetic>
         </div>
       </div>
     </header>
   );
 };
+
 
 export default Header;

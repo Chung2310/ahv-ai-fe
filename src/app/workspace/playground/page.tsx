@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import { MODELS } from '@/data/models';
@@ -102,7 +103,14 @@ export default function PlaygroundPage() {
               </div>
             ) : result ? (
               <div className="result-view">
-                <img src={result.url} alt="Generated result" className="result-img" />
+                <Image 
+                  src={result.url} 
+                  alt="Generated result" 
+                  width={1024} 
+                  height={1024} 
+                  unoptimized
+                  className="result-img" 
+                />
                 <div className="result-info">
                   <div className="info-item">
                     <span className="info-label">Model:</span>
@@ -128,3 +136,4 @@ export default function PlaygroundPage() {
     </main>
   );
 }
+

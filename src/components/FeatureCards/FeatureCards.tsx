@@ -1,4 +1,5 @@
 import React from 'react';
+import Reveal from '../Reveal/Reveal';
 import './FeatureCards.css';
 
 const features = [
@@ -32,17 +33,20 @@ const FeatureCards = () => {
   return (
     <div className="feature-grid">
       {features.map((feature, index) => (
-        <div key={index} className="feature-card animate-fade-in hover-glow" style={{ animationDelay: `${index * 0.1}s` }}>
-          <div className="feature-icon-wrapper" style={{ backgroundColor: `${feature.color}15`, color: feature.color }}>
-            <span className="feature-icon">{feature.icon}</span>
+        <Reveal key={index} delay={index * 0.1} direction="up" distance={20}>
+          <div className="feature-card hover-glow">
+            <div className="feature-icon-wrapper" style={{ backgroundColor: `${feature.color}15`, color: feature.color }}>
+              <span className="feature-icon">{feature.icon}</span>
+            </div>
+            <h3 className="feature-title">{feature.title}</h3>
+            <p className="feature-desc">{feature.description}</p>
+            <div className="feature-link">View Documentation →</div>
           </div>
-          <h3 className="feature-title">{feature.title}</h3>
-          <p className="feature-desc">{feature.description}</p>
-          <div className="feature-link">View Documentation →</div>
-        </div>
+        </Reveal>
       ))}
     </div>
   );
 };
 
 export default FeatureCards;
+

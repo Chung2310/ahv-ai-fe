@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import Reveal from '../Reveal/Reveal';
+import Magnetic from '../Effects/Magnetic';
 import './Hero.css';
 
 export default function Hero() {
-  const [displayText, setDisplayText] = useState('');
   const fullText = "The Most Powerful AI Ecosystem for Developers";
+  const words = fullText.split(" ");
   const { scrollY } = useScroll();
 
   // Parallax effects
@@ -14,31 +16,34 @@ export default function Hero() {
   const sphereY = useTransform(scrollY, [0, 500], [0, -80]);
   const contentY = useTransform(scrollY, [0, 500], [0, 40]);
 
-  useEffect(() => {
-    let i = 0;
-    const interval = setInterval(() => {
-      setDisplayText(fullText.slice(0, i));
-      i++;
-      if (i > fullText.length) clearInterval(interval);
-    }, 50);
-    return () => clearInterval(interval);
-  }, []);
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
       },
     },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as any } },
   };
+
+  const titleContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08, delayChildren: 0.5 }
+    }
+  }
+
+  const wordVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+  }
 
   return (
     <section className="hero-section">
@@ -59,12 +64,20 @@ export default function Hero() {
           </motion.div>
           
           <motion.h1 
-            className="hero-title glitch-text" 
-            variants={itemVariants}
-            data-text={fullText}
+            className="hero-title" 
+            variants={titleContainer}
+            initial="hidden"
+            animate="visible"
           >
-            {displayText}
-            <span className="typing-cursor">|</span>
+            {words.map((word, i) => (
+              <motion.span 
+                key={i} 
+                variants={wordVariants} 
+                style={{ display: 'inline-block', marginRight: '0.25em' }}
+              >
+                {word}
+              </motion.span>
+            ))}
           </motion.h1>
           
           <motion.p className="hero-subtitle" variants={itemVariants}>
@@ -73,23 +86,28 @@ export default function Hero() {
           </motion.p>
 
           <motion.div className="hero-actions" variants={itemVariants}>
-            <motion.a 
-              href="/login" 
-              className="btn-primary skew-btn"
-              whileHover={{ scale: 1.05, x: 5 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span>Get Started Now</span>
-            </motion.a>
-            <motion.a 
-              href="/models" 
-              className="btn-secondary skew-btn"
-              whileHover={{ scale: 1.05, x: -5 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span>View Models Library</span>
-            </motion.a>
+            <Magnetic>
+              <motion.a 
+                href="/login" 
+                className="btn-primary skew-btn"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span>Get Started Now</span>
+              </motion.a>
+            </Magnetic>
+            <Magnetic>
+              <motion.a 
+                href="/models" 
+                className="btn-secondary skew-btn"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span>View Models Library</span>
+              </motion.a>
+            </Magnetic>
           </motion.div>
+
 
           <motion.div className="hero-stats" variants={itemVariants}>
             {[
@@ -101,6 +119,10 @@ export default function Hero() {
                 key={idx} 
                 className="stat-item"
                 whileHover={{ y: -5, color: 'var(--primary)' }}
+                variants={{
+                  hidden: { opacity: 0, scale: 0.8 },
+                  visible: { opacity: 1, scale: 1 }
+                }}
               >
                 <span className={`stat-value ${stat.color}`}>{stat.value}</span>
                 <span className="stat-label">{stat.label}</span>
@@ -112,9 +134,9 @@ export default function Hero() {
         <motion.div 
           className="hero-visual"
           style={{ y: sphereY }}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
+          initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="visual-wrapper">
             <motion.div 
@@ -145,3 +167,4 @@ export default function Hero() {
     </section>
   );
 }
+

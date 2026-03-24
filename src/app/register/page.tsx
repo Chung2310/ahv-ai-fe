@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image'; // Added this import
 import '../login/auth.css'; // Reuse login styles
 
 export default function RegisterPage() {
@@ -18,7 +19,7 @@ export default function RegisterPage() {
         
         <div className="social-auth">
           <button className="social-btn">
-            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" />
+            <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width={20} height={20} /> {/* Replaced img with Image and added width/height */}
             Sign up with Google
           </button>
         </div>
