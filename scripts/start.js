@@ -7,8 +7,9 @@ function loadEnv() {
   const envPath = path.resolve(process.cwd(), '.env');
   if (fs.existsSync(envPath)) {
     const envContent = fs.readFileSync(envPath, 'utf8');
-    envContent.split('\n').forEach(line => {
-      const match = line.match(/^([^=]+)=(.*)$/);
+    envContent.split(/\r?\n/).forEach(line => {
+      // Allow spaces around = and ignore comments/empty lines
+      const match = line.match(/^\s*([^#=]+)\s*=\s*([^#]*)\s*$/);
       if (match) {
         const key = match[1].trim();
         const value = match[2].trim();
@@ -23,7 +24,9 @@ loadEnv();
 const port = process.env.PORT || 3000;
 const command = process.argv[2] || 'dev';
 
-console.log(`> Starting AHV AI in ${command} mode on port ${port}...`);
+console.log(`> [AHV-AI] Mode: ${command}`);
+console.log(`> [AHV-AI] Port: ${port}`);
+console.log(`> [AHV-AI] Backend: ${process.env.NEXT_PUBLIC_BACKEND}`);
 
 const next = spawn('npx', ['next', command, '-p', port], { 
   stdio: 'inherit', 

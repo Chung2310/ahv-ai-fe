@@ -1,7 +1,43 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
+import Link from 'next/link';
 import './DeveloperSection.css';
 
+const CODE_SNIPPETS = {
+  curl: `curl -X POST "https://api.piapi.ai/v1/flux/generate" \\
+  -H "Authorization: Bearer $PIAPI_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "prompt": "Cyberpunk city at night, 8k",
+    "negative_prompt": "blurry, low quality",
+    "num_images": 1
+  }'`,
+  node: `const axios = require('axios');
+
+const response = await axios.post('https://api.piapi.ai/v1/flux/generate', {
+  prompt: 'Cyberpunk city at night, 8k',
+  negative_prompt: 'blurry, low quality',
+  num_images: 1
+}, {
+  headers: { 'Authorization': \`Bearer \${process.env.PIAPI_KEY}\` }
+});`,
+  python: `import requests
+
+response = requests.post(
+    "https://api.piapi.ai/v1/flux/generate",
+    headers={"Authorization": f"Bearer {PIAPI_KEY}"},
+    json={
+        "prompt": "Cyberpunk city at night, 8k",
+        "negative_prompt": "blurry, low quality",
+        "num_images": 1
+    }
+)`
+};
+
 const DeveloperSection = () => {
+  const [activeTab, setActiveTab] = useState<'curl' | 'node' | 'python'>('curl');
+
   return (
     <section className="dev-section">
       <div className="container dev-grid">
@@ -31,26 +67,36 @@ const DeveloperSection = () => {
             </li>
           </ul>
           
-          <button className="btn-primary">View API Documentation</button>
+          <Link href="/docs">
+            <button className="btn-primary">View API Documentation</button>
+          </Link>
         </div>
         
         <div className="dev-visual glass dark">
           <div className="code-editor">
             <div className="editor-tabs">
-              <div className="tab active">cURL</div>
-              <div className="tab">Node.js</div>
-              <div className="tab">Python</div>
+              <div 
+                className={`tab ${activeTab === 'curl' ? 'active' : ''}`}
+                onClick={() => setActiveTab('curl')}
+              >
+                cURL
+              </div>
+              <div 
+                className={`tab ${activeTab === 'node' ? 'active' : ''}`}
+                onClick={() => setActiveTab('node')}
+              >
+                Node.js
+              </div>
+              <div 
+                className={`tab ${activeTab === 'python' ? 'active' : ''}`}
+                onClick={() => setActiveTab('python')}
+              >
+                Python
+              </div>
             </div>
             <div className="code-block">
               <pre>
-                <code>{`curl -X POST "https://api.piapi.ai/v1/flux/generate" \\
-  -H "Authorization: Bearer $PIAPI_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "prompt": "Cyberpunk city at night, 8k",
-    "negative_prompt": "blurry, low quality",
-    "num_images": 1
-  }'`}</code>
+                <code>{CODE_SNIPPETS[activeTab]}</code>
               </pre>
             </div>
             <div className="code-footer">
