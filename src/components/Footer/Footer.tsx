@@ -8,12 +8,12 @@ const Footer = () => {
       <div className="container footer-grid">
         <div className="footer-brand">
           <div className="logo">
-            <span className="logo-icon">A</span>
+            <span className="logo-icon"></span>
             <span className="logo-text">AHV <span className="gradient-text">AI</span></span>
           </div>
           <p className="footer-desc">
-            Nền tảng API AI mạnh mẽ nhất thế giới. 
-            Mở rộng trí tuệ cho thế hệ ứng dụng tiếp theo.
+            The world's most powerful AI API platform. 
+            Scaling intelligence for the next generation of applications.
           </p>
           <div className="social-links">
             <a href="#" className="social-link">𝕏</a>
@@ -21,39 +21,39 @@ const Footer = () => {
             <a href="#" className="social-link">Discord</a>
           </div>
           <button type="submit" className="subscribe-btn skew-btn">
-            <span>Đăng ký nhận tin</span>
+            <span>Subscribe</span>
           </button>
         </div>
         <div className="footer-col">
-          <h4>Sản phẩm</h4>
+          <h4>Products</h4>
           <ul>
-            <li><Link href="/models">Mô hình AI</Link></li>
+            <li><Link href="/models">AI Models</Link></li>
             <li><Link href="/workspace">Workspace</Link></li>
-            <li><Link href="/docs">Tài liệu API</Link></li>
-            <li><Link href="/pricing">Bảng giá</Link></li>
+            <li><Link href="/docs">API Docs</Link></li>
+            <li><Link href="/pricing">Pricing</Link></li>
           </ul>
         </div>
         <div className="footer-col">
-          <h4>Công ty</h4>
+          <h4>Company</h4>
           <ul>
-            <li><a href="#">Về chúng tôi</a></li>
+            <li><a href="#">About Us</a></li>
             <li><a href="#">Blog</a></li>
-            <li><a href="#">Tuyển dụng</a></li>
+            <li><a href="#">Careers</a></li>
           </ul>
         </div>
         <div className="footer-col">
-          <h4>Pháp lý</h4>
+          <h4>Legal</h4>
           <ul>
-            <li><a href="#">Chính sách bảo mật</a></li>
-            <li><a href="#">Điều khoản dịch vụ</a></li>
-            <li><a href="#">Chính sách Cookie</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
           </ul>
         </div>
       </div>
       
       <div className="footer-bottom">
         <div className="container">
-          <p>&copy; 2024 AHV AI Inc. Bảo lưu mọi quyền. Được xây dựng với ❤️ dành cho các nhà phát triển.</p>
+          <p>&copy; 2024 AHV AI Inc. All rights reserved. Built with ❤️ for developers.</p>
         </div>
       </div>
     </footer>

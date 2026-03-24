@@ -1,16 +1,16 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import BlogCard from '@/components/Blog/BlogCard';
 import Reveal from '@/components/Reveal/Reveal';
-import './blog.css';
 
 const blogPosts = [
   {
     category: "AI Technology",
     date: "March 20, 2026",
     title: "The Future of Multimodal AI Agents",
-    excerpt: "Exploring how the next generation of AI agents will seamlessly navigate between text, image, and video processing to solve complex tasks.",
+    excerpt: "Explore how the next generation of AI agents will seamlessly navigate between text, images, and video processing to solve complex tasks.",
     image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1632&auto=format&fit=crop",
     slug: "future-of-multimodal-ai"
   },
@@ -18,15 +18,15 @@ const blogPosts = [
     category: "Development",
     date: "March 18, 2026",
     title: "Optimizing API Performance for Scale",
-    excerpt: "Best practices for building resilient, high-speed API infrastructures that can handle millions of concurrent requests without latency.",
+    excerpt: "Best practices for building high-speed, resilient API infrastructure that can handle millions of concurrent requests without lag.",
     image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=1632&auto=format&fit=crop",
     slug: "optimizing-api-performance"
   },
   {
-    category: "Creative AI",
+    category: "Generative AI",
     date: "March 15, 2026",
     title: "Generative Video: The New Content Frontier",
-    excerpt: "How models like Luma and Kling are revolutionizing the way creators produce cinematic content using simple text prompts.",
+    excerpt: "How models like Luma and Kling are revolutionizing how creators produce cinematic content using simple text prompts.",
     image: "https://images.unsplash.com/photo-1620712943543-bcc4628c9757?q=80&w=1632&auto=format&fit=crop",
     slug: "generative-video-frontier"
   },
@@ -34,7 +34,7 @@ const blogPosts = [
     category: "Company News",
     date: "March 10, 2026",
     title: "AHV AI v2.0: What's New in the Latest Update",
-    excerpt: "We're excited to announce major improvements to our engine, including faster inference times and dedicated enterprise support channels.",
+    excerpt: "We're thrilled to announce major improvements to our engine, including faster inference times and dedicated enterprise support channels.",
     image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1632&auto=format&fit=crop",
     slug: "ahv-ai-v2-announcement"
   }
@@ -60,7 +60,7 @@ export default function BlogPage() {
           {/* Featured Post */}
           <Reveal width="100%" direction="up" delay={0.2} distance={40}>
             <div className="featured-post glass">
-              <div className="featured-image">
+              <Link href={`/blog/${featuredPost.slug}`} className="featured-image">
                 <Image 
                   src={featuredPost.image} 
                   alt={featuredPost.title} 
@@ -69,15 +69,17 @@ export default function BlogPage() {
                   priority
                   className="object-cover"
                 />
-              </div>
+              </Link>
               <div className="featured-content">
                 <span className="blog-category">{featuredPost.category}</span>
                 <span className="blog-date">{featuredPost.date}</span>
-                <h2 className="featured-title">{featuredPost.title}</h2>
+                <h2 className="featured-title">
+                  <Link href={`/blog/${featuredPost.slug}`}>{featuredPost.title}</Link>
+                </h2>
                 <p className="featured-excerpt">{featuredPost.excerpt}</p>
-                <button className="btn-primary skew-btn">
-                  <span>Read Featured Story</span>
-                </button>
+                <Link href={`/blog/${featuredPost.slug}`} className="btn-primary skew-btn">
+                  <span>Read Featured Post</span>
+                </Link>
               </div>
             </div>
           </Reveal>

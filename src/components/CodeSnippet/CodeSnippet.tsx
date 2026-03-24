@@ -23,7 +23,7 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ code, language }) => {
           {copied ? 'Copied!' : 'Copy'}
         </button>
       </div>
-      <div className="code-snippet-body">
+      <div className="code-snippet-body" data-lenis-prevent>
         <pre>
           <code>{code}</code>
         </pre>

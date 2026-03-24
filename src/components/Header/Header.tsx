@@ -15,27 +15,27 @@ const Header = () => {
         <div className="nav-left">
           <Magnetic>
             <Link href="/" className="logo">
-              <span className="logo-icon">A</span>
+              <span className="logo-icon"></span>
               <span className="logo-text">AHV <span className="gradient-text">AI</span></span>
             </Link>
           </Magnetic>
           <div className="status-indicator">
             <span className="status-dot"></span>
-            HỆ THỐNG ONLINE
+            SYSTEM ONLINE
           </div>
         </div>
 
         <nav className="nav-links">
-          <Magnetic><Link href="/models" className={pathname === '/models' ? 'active' : ''}>Mô hình</Link></Magnetic>
-          <Magnetic><Link href="/workspace" className={pathname === '/workspace' ? 'active' : ''}>Trải nghiệm</Link></Magnetic>
-          <Magnetic><Link href="/docs" className={pathname === '/docs' ? 'active' : ''}>Tài liệu</Link></Magnetic>
-          <Magnetic><Link href="/pricing" className="nav-link">Bảng giá</Link></Magnetic>
+          <Magnetic><Link href="/models" className={pathname === '/models' ? 'active' : ''}>Models</Link></Magnetic>
+          <Magnetic><Link href="/workspace" className={pathname === '/workspace' ? 'active' : ''}>Workspace</Link></Magnetic>
+          <Magnetic><Link href="/docs" className={pathname === '/docs' ? 'active' : ''}>Docs</Link></Magnetic>
+          <Magnetic><Link href="/pricing" className="nav-link">Pricing</Link></Magnetic>
           <Magnetic><Link href="/blog" className="nav-link">Blog</Link></Magnetic>
         </nav>
         
         <div className="header-actions">
-          <Magnetic><Link href="/login" className="btn-secondary">Đăng nhập</Link></Magnetic>
-          <Magnetic><Link href="/register" className="btn-primary">Đăng ký</Link></Magnetic>
+          <Magnetic><Link href="/login" className="btn-secondary">Login</Link></Magnetic>
+          <Magnetic><Link href="/register" className="btn-primary">Register</Link></Magnetic>
         </div>
       </div>
     </header>

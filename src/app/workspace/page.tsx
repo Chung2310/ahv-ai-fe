@@ -1,19 +1,34 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
+import ImageComponent from 'next/image';
+import Link from 'next/link';
 import Reveal from '@/components/Reveal/Reveal';
 import Magnetic from '@/components/Effects/Magnetic';
+import { MODELS } from '@/data/models';
 import './workspace.css';
 
 export default function WorkspacePage() {
-  const [prompt, setPrompt] = useState('Một phi hành gia đang cưỡi ngựa trên mặt trăng, phong cách anime cinematic');
+  const [selectedModel, setSelectedModel] = useState(MODELS[0].id);
+  const [prompt, setPrompt] = useState('');
   const [generating, setGenerating] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
 
+  const fullPrompt = 'An astronaut riding a horse on the moon, cinematic anime style';
+
+  React.useEffect(() => {
+    let i = 0;
+    const interval = setInterval(() => {
+      setPrompt(fullPrompt.slice(0, i));
+      i++;
+      if (i > fullPrompt.length) clearInterval(interval);
+    }, 30);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleGenerate = () => {
     setGenerating(true);
-    // Giả lập API call
+    // Simulate API call
     setTimeout(() => {
       setResultImage(`https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=800&q=80`);
       setGenerating(false);
@@ -23,41 +38,62 @@ export default function WorkspacePage() {
   return (
     <Reveal>
       <main className="workspace-page">
-        <div className="section-header text-center mb-16">
-          <h1 className="gradient-text text-5xl font-bold mb-4">AI Workspace</h1>
-          <p className="text-gray-400 text-xl">Thử nghiệm và sáng tạo với các mô hình AI mạnh mẽ nhất</p>
+        {/* Background Effects */}
+        <div className="mesh-bg-container">
+          <div className="mesh-blob blob-green"></div>
+          <div className="mesh-blob blob-accent"></div>
+        </div>
+        <div className="cyber-grid"></div>
+
+        <div className="workspace-header-top mb-8 px-6">
+          <div className="header-left">
+            <Link href="/" className="back-btn-ws">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              <span>Back</span>
+            </Link>
+          </div>
+          <div className="header-center">
+            <Link href="/" className="logo workspace-logo">
+              <span className="logo-icon"></span>
+              <span className="logo-text">AHV <span className="gradient-text">AI</span> <span className="workspace-badge">Workspace</span></span>
+            </Link>
+          </div>
+          <div className="header-right"></div>
         </div>
 
         <div className="workspace-container">
           {/* Left Sidebar: Settings */}
           <aside className="workspace-sidebar">
-            <div className="sidebar-group mb-8">
-              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4 block">Chọn Mô Hình</label>
+            <div className="sidebar-group">
+              <label className="sidebar-label">Select AI Model</label>
               <select 
                 className="workspace-select"
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
               >
-                <option>Flux.1 [Dev]</option>
-                <option>Stable Diffusion XL</option>
-                <option>Midjourney v6</option>
-                <option>DALL-E 3</option>
+                {MODELS.map(model => (
+                  <option key={model.id} value={model.id}>
+                    {model.title}
+                  </option>
+                ))}
               </select>
             </div>
 
-            <div className="sidebar-group mb-8">
-              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4 block">Kích Thước</label>
-              <div className="grid grid-cols-2 gap-3">
-                <button className="ratio-btn active">1:1 Square</button>
-                <button className="ratio-btn">16:9 Wide</button>
-                <button className="ratio-btn">9:16 Portrait</button>
-                <button className="ratio-btn">4:3 Standard</button>
+            <div className="sidebar-group">
+              <label className="sidebar-label">Dimensions</label>
+              <div className="ratio-grid">
+                <button className="ratio-btn active">1:1</button>
+                <button className="ratio-btn">16:9</button>
+                <button className="ratio-btn">9:16</button>
+                <button className="ratio-btn">4:3</button>
               </div>
             </div>
 
-            <div className="sidebar-group mb-8">
-              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4 block">Độ Phân Giải</label>
+            <div className="sidebar-group">
+              <label className="sidebar-label">Resolution</label>
               <select className="workspace-select">
                 <option>1024 x 1024</option>
-                <option>2048 x 2048 (Upscaled)</option>
+                <option>2048 x 2048 (HD)</option>
               </select>
             </div>
 
@@ -67,7 +103,7 @@ export default function WorkspacePage() {
                 onClick={handleGenerate}
                 disabled={generating}
               >
-                {generating ? 'Đang khởi tạo...' : 'Khởi Tạo Ngay'}
+                {generating ? 'Processing...' : 'Generate Now'}
               </button>
             </Magnetic>
           </aside>
@@ -83,20 +119,20 @@ export default function WorkspacePage() {
                     <path d="M2 12L12 17L22 12" stroke="#00f3ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold mb-2">Sẵn sàng sáng tạo?</h3>
-                <p className="text-gray-400">Nhập prompt bên dưới và chọn mô hình để bắt đầu.</p>
+                <h3 className="text-2xl font-bold mb-2">Ready to Create?</h3>
+                <p className="text-gray-400">Enter a prompt below and select a model to start generating.</p>
               </div>
             ) : (
               <div className="result-preview relative w-full aspect-square max-w-[600px] rounded-24 overflow-hidden border border-white/10 group">
                 {generating ? (
                   <div className="absolute inset-0 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center z-10">
                     <div className="loading-spinner mb-4"></div>
-                    <p className="text-cyan-400 animate-pulse font-medium">Đang xử lý dữ liệu AI...</p>
+                    <p className="text-cyan-400 animate-pulse font-medium">Processing AI data...</p>
                   </div>
                 ) : null}
                 
                 {resultImage && (
-                  <Image 
+                  <ImageComponent 
                     src={resultImage} 
                     alt="AI Generated Result"
                     fill
@@ -113,10 +149,10 @@ export default function WorkspacePage() {
               </div>
             )}
 
-            <div className="workspace-input-area w-full max-w-[800px] mt-8">
+            <div className="workspace-input-area w-full max-w-[900px]">
               <textarea 
-                className="w-full bg-white/5 border border-white/10 rounded-24 p-6 text-lg focus:outline-none focus:border-cyan-500/50 transition-all min-h-[120px] resize-none"
-                placeholder="Mô tả ý tưởng của bạn tại đây..."
+                className="workspace-textarea text-center"
+                placeholder="Describe your idea here..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
               ></textarea>

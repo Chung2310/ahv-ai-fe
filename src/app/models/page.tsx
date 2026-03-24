@@ -22,6 +22,13 @@ export default function ModelsPage() {
 
   return (
     <main className="models-page">
+      {/* Background Effects */}
+      <div className="mesh-bg-container">
+        <div className="mesh-blob blob-green"></div>
+        <div className="mesh-blob blob-accent"></div>
+      </div>
+      <div className="cyber-grid"></div>
+
       <Header />
       
       <div className="container">
@@ -52,7 +59,7 @@ export default function ModelsPage() {
           <div className="models-main">
             <header className="models-header">
               <h1 className="models-title">Explore <span className="gradient-text">AI Models</span></h1>
-              <p className="models-subtitle">The most powerful collection of AI models for your projects.</p>
+              <p className="models-subtitle">The world's most powerful AI models, optimized for your projects.</p>
               
               <div className="search-container">
                 <span className="search-icon">🔍</span>

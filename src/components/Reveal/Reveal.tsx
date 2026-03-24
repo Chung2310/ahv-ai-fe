@@ -16,7 +16,7 @@ interface RevealProps {
 
 const Reveal: React.FC<RevealProps> = ({ 
   children, 
-  width = "fit-content",
+  width = "100%",
   direction = 'up',
   delay = 0.2,
   duration = 0.8,

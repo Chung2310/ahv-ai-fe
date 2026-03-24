@@ -7,6 +7,8 @@
   overflow-y: auto;
   border-right: 1px solid var(--glass-border);
   background: var(--bg-white);
+  flex-shrink: 0;
+  z-index: 10;
 }
 
 .docs-nav-section {

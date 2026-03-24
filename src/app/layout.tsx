@@ -10,9 +10,9 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "AHV AI | Nền tảng API AI mạnh mẽ",
-  description: "Hệ sinh thái AI mạnh mẽ nhất dành cho nhà phát triển. Tích hợp các mô hình AI tiên tiến chỉ trong vài phút.",
-  keywords: ["AI", "API", "Trí tuệ nhân tạo", "Machine Learning", "AHV AI", "Flux", "Claude", "GPT"],
+  title: "AHV AI | Powerful AI API Platform",
+  description: "The most powerful AI ecosystem for developers. Integrate advanced AI models in minutes.",
+  keywords: ["AI", "API", "Artificial Intelligence", "Machine Learning", "AHV AI", "Flux", "Claude", "GPT"],
   openGraph: {
     title: "AHV AI | Premium AI API Platform",
     description: "Scale your ambition with AHV AI.",
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={plusJakartaSans.variable}>
+    <html lang="en" className={plusJakartaSans.variable}>
       <body className={plusJakartaSans.className}>
         <AppEffects>
           {children}

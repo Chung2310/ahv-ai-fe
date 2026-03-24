@@ -9,7 +9,7 @@ interface DocsSidebarProps {
 
 const DocsSidebar: React.FC<DocsSidebarProps> = ({ currentSlug, onSelect }) => {
   return (
-    <aside className="docs-sidebar">
+    <aside className="docs-sidebar" data-lenis-prevent>
       {DOCS_NAVIGATION.map((section, idx) => (
         <div key={idx} className="docs-nav-section">
           <h4 className="docs-nav-title">{section.title}</h4>

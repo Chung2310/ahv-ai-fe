@@ -1,7 +1,7 @@
 .model-card {
-  background: var(--bg-white);
-  border-radius: var(--border-radius-md);
-  border: 1px solid var(--glass-border);
+  background: var(--surface);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border);
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
@@ -78,13 +78,14 @@
 }
 
 .model-tag {
-  background: var(--bg-soft);
-  color: var(--text-muted);
-  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  font-size: 0.7rem;
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 6px;
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-mono);
 }
 
 .model-card-actions {
@@ -118,7 +119,7 @@
   border-radius: 10px;
   font-weight: 700;
   font-size: 0.85rem;
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border);
   text-align: center;
   transition: all 0.2s ease;
 }
