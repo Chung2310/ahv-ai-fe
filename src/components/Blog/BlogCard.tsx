@@ -11,13 +11,13 @@ interface BlogCardProps {
   title: string;
   excerpt: string;
   image: string;
-  slug: string;
+  id: string;
 }
 
-const BlogCard: React.FC<BlogCardProps> = ({ category, date, title, excerpt, image, slug }) => {
+const BlogCard: React.FC<BlogCardProps> = ({ category, date, title, excerpt, image, id }) => {
   return (
     <div className="blog-card glass hover-glow">
-      <Link href={`/blog/${slug}`} className="blog-card-image">
+      <Link href={`/blog/${id}`} className="blog-card-image">
         <Image 
           src={image} 
           alt={title} 
@@ -30,10 +30,10 @@ const BlogCard: React.FC<BlogCardProps> = ({ category, date, title, excerpt, ima
       <div className="blog-card-content">
         <span className="blog-date">{date}</span>
         <h3 className="blog-title">
-          <Link href={`/blog/${slug}`}>{title}</Link>
+          <Link href={`/blog/${id}`}>{title}</Link>
         </h3>
         <p className="blog-excerpt">{excerpt}</p>
-        <Link href={`/blog/${slug}`} className="read-more">
+        <Link href={`/blog/${id}`} className="read-more">
           Read More <span>→</span>
         </Link>
       </div>

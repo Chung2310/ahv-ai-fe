@@ -10,7 +10,7 @@ import '../login/auth.css';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -74,10 +74,10 @@ export default function RegisterPage() {
             <label className="form-label">User Name</label>
             <input 
               type="text" 
-              name="username"
+              name="name"
               className="form-input" 
               placeholder="JohnDoe123" 
-              value={formData.username}
+              value={formData.name}
               onChange={handleChange}
               required 
             />

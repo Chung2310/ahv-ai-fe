@@ -30,9 +30,9 @@ export default function ProfilePage() {
       }
 
       try {
-        const response = await api.get('/api/v1/users/me');
+        const response = await api.get('/api/v1/auths/me');
         if (response.data.success) {
-          const freshUser = response.data.data;
+          const freshUser = response.data.data.user;
           setUser(freshUser);
           localStorage.setItem('user', JSON.stringify(freshUser));
         }
@@ -88,10 +88,10 @@ export default function ProfilePage() {
               <div className="profile-avatar-section">
                 <div className="profile-avatar-large">
                   {user?.avatar ? (
-                    <img src={user.avatar} alt={user.username} />
+                    <img src={user.avatar} alt={user.name || user.username} />
                   ) : (
                     <div className="avatar-placeholder-large">
-                      {user?.username?.charAt(0) || 'U'}
+                      {(user?.name || user?.username || 'U').charAt(0)}
                     </div>
                   )}
                   <div className="avatar-edit-badge">
@@ -100,7 +100,7 @@ export default function ProfilePage() {
                 </div>
                 
                 <div className="profile-main-info">
-                  <h1 className="profile-name">{user?.username}</h1>
+                  <h1 className="profile-name">{user?.name || user?.username}</h1>
                   <span className="profile-role-badge">{user?.role || 'User'}</span>
                 </div>
               </div>

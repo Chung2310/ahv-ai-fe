@@ -28,9 +28,9 @@ const Header = () => {
       }
 
       try {
-        const response = await api.get('/api/v1/users/me');
+        const response = await api.get('/api/v1/auths/me');
         if (response.data.success) {
-          const freshUser = response.data.data;
+          const freshUser = response.data.data.user;
           setUser(freshUser);
           localStorage.setItem('user', JSON.stringify(freshUser));
         }
@@ -73,6 +73,9 @@ const Header = () => {
           <Magnetic><Link href="/docs" className={pathname === '/docs' ? 'active' : ''}>Docs</Link></Magnetic>
           <Magnetic><Link href="/pricing" className="nav-link">Pricing</Link></Magnetic>
           <Magnetic><Link href="/blog" className="nav-link">Blog</Link></Magnetic>
+          {(user?.role === 'admin' || user?.role === 'superadmin') && (
+            <Magnetic><Link href="/admin" className="nav-link admin-link-highlight">Admin</Link></Magnetic>
+          )}
         </nav>
         
         <div className="header-actions">
@@ -81,14 +84,14 @@ const Header = () => {
               <Link href="/profile" className="user-avatar-container">
                 <div className="avatar-wrapper">
                   {user?.avatar ? (
-                    <img src={user.avatar} alt={user?.username || 'User'} className="user-avatar-img" />
+                    <img src={user.avatar} alt={user?.name || user?.username || 'User'} className="user-avatar-img" />
                   ) : (
                     <div className="user-avatar-placeholder">
-                      {user?.username?.charAt(0) || 'U'}
+                      {(user?.name || user?.username || 'U').charAt(0)}
                     </div>
                   )}
                 </div>
-                <span className="user-name-min">{user?.username || 'User'}</span>
+                <span className="user-name-min">{user?.name || user?.username || 'User'}</span>
               </Link>
             </Magnetic>
           ) : (

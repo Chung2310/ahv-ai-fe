@@ -10,7 +10,7 @@ import './auth.css';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -43,8 +43,12 @@ export default function LoginPage() {
       localStorage.setItem('accessToken', token);
       localStorage.setItem('user', JSON.stringify(user));
       
-      // Redirect to home
-      router.push('/');
+      // Redirect based on role
+      if (user.role === 'admin' || user.role === 'superadmin') {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
     } catch (err: any) {
       setError(err.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
     } finally {
@@ -65,7 +69,7 @@ export default function LoginPage() {
         </Link>
         
         <h1 className="auth-title">Welcome Back</h1>
-        <p className="auth-subtitle">Log in to manage your AI models and projects.</p>
+        <p className="auth-subtitle">Log in with your email to manage your AI models.</p>
         
         <div className="social-auth">
           <button className="btn-social google-btn">
@@ -78,20 +82,20 @@ export default function LoginPage() {
         </div>
         
         <div className="auth-divider">
-          <span>or use username</span>
+          <span>or use email</span>
         </div>
 
         {error && <div className="auth-error">{error}</div>}
         
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">User Name</label>
+            <label className="form-label">Email Address</label>
             <input 
-              type="text" 
-              name="username"
+              type="email" 
+              name="email"
               className="form-input" 
-              placeholder="JohnDoe123" 
-              value={formData.username}
+              placeholder="name@company.com" 
+              value={formData.email}
               onChange={handleChange}
               required 
             />

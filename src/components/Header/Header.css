@@ -194,3 +194,19 @@
   font-weight: 600;
   color: var(--text-primary);
 }
+
+.admin-link-highlight {
+  color: #ff3e3e !important;
+  text-shadow: 0 0 10px rgba(255, 62, 62, 0.5);
+  border: 1px solid rgba(255, 62, 62, 0.3);
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: rgba(255, 62, 62, 0.05);
+}
+
+.admin-link-highlight:hover {
+  background: rgba(255, 62, 62, 0.1) !important;
+  border-color: #ff3e3e !important;
+  box-shadow: 0 0 15px rgba(255, 62, 62, 0.3);
+}
+

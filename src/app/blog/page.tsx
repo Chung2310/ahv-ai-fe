@@ -1,48 +1,69 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import BlogCard from '@/components/Blog/BlogCard';
 import Reveal from '@/components/Reveal/Reveal';
-
-const blogPosts = [
-  {
-    category: "AI Technology",
-    date: "March 20, 2026",
-    title: "The Future of Multimodal AI Agents",
-    excerpt: "Explore how the next generation of AI agents will seamlessly navigate between text, images, and video processing to solve complex tasks.",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1632&auto=format&fit=crop",
-    slug: "future-of-multimodal-ai"
-  },
-  {
-    category: "Development",
-    date: "March 18, 2026",
-    title: "Optimizing API Performance for Scale",
-    excerpt: "Best practices for building high-speed, resilient API infrastructure that can handle millions of concurrent requests without lag.",
-    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=1632&auto=format&fit=crop",
-    slug: "optimizing-api-performance"
-  },
-  {
-    category: "Generative AI",
-    date: "March 15, 2026",
-    title: "Generative Video: The New Content Frontier",
-    excerpt: "How models like Luma and Kling are revolutionizing how creators produce cinematic content using simple text prompts.",
-    image: "https://images.unsplash.com/photo-1620712943543-bcc4628c9757?q=80&w=1632&auto=format&fit=crop",
-    slug: "generative-video-frontier"
-  },
-  {
-    category: "Company News",
-    date: "March 10, 2026",
-    title: "AHV AI v2.0: What's New in the Latest Update",
-    excerpt: "We're thrilled to announce major improvements to our engine, including faster inference times and dedicated enterprise support channels.",
-    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1632&auto=format&fit=crop",
-    slug: "ahv-ai-v2-announcement"
-  }
-];
+import api from '@/lib/api';
+import './blog.css';
 
 export default function BlogPage() {
-  const featuredPost = blogPosts[0];
-  const remainingPosts = blogPosts.slice(1);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [postsRes, catsRes] = await Promise.all([
+          api.get('/api/v1/posts'),
+          api.get('/api/v1/categories')
+        ]);
+
+        if (postsRes.data.success) {
+          const data = postsRes.data.data?.posts || postsRes.data.data || [];
+          setPosts(Array.isArray(data) ? data : []);
+        }
+        if (catsRes.data.success) {
+          const data = catsRes.data.data?.categories || catsRes.data.data || [];
+          setCategories(Array.isArray(data) ? data : []);
+        }
+      } catch (err) {
+        console.error('Failed to fetch blog data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredPosts = selectedCategory === 'All' 
+    ? posts 
+    : posts.filter(post => {
+        const catName = post.categoryId?.name || post.categoryId || '';
+        return catName === selectedCategory;
+      });
+
+  const featuredPost = filteredPosts[0];
+  const remainingPosts = filteredPosts.slice(1);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen pt-20">
+        <Header />
+        <div className="container py-100 text-center">
+          <div className="loading-spinner mx-auto"></div>
+          <p className="mt-20 text-gray-400">Loading insights...</p>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen pt-20">
@@ -57,32 +78,61 @@ export default function BlogPage() {
             </div>
           </Reveal>
 
-          {/* Featured Post */}
-          <Reveal width="100%" direction="up" delay={0.2} distance={40}>
-            <div className="featured-post glass">
-              <Link href={`/blog/${featuredPost.slug}`} className="featured-image">
-                <Image 
-                  src={featuredPost.image} 
-                  alt={featuredPost.title} 
-                  width={1200} 
-                  height={600} 
-                  priority
-                  className="object-cover"
-                />
-              </Link>
-              <div className="featured-content">
-                <span className="blog-category">{featuredPost.category}</span>
-                <span className="blog-date">{featuredPost.date}</span>
-                <h2 className="featured-title">
-                  <Link href={`/blog/${featuredPost.slug}`}>{featuredPost.title}</Link>
-                </h2>
-                <p className="featured-excerpt">{featuredPost.excerpt}</p>
-                <Link href={`/blog/${featuredPost.slug}`} className="btn-primary skew-btn">
-                  <span>Read Featured Post</span>
-                </Link>
-              </div>
+          {/* Category Filter */}
+          <Reveal width="100%" direction="up" delay={0.1}>
+            <div className="category-filters mb-40 flex flex-wrap justify-center gap-4">
+              <button 
+                className={`filter-btn ${selectedCategory === 'All' ? 'active' : ''}`}
+                onClick={() => setSelectedCategory('All')}
+              >
+                All Posts
+              </button>
+              {categories.map((cat: any) => (
+                <button 
+                  key={cat.id || cat._id}
+                  className={`filter-btn ${selectedCategory === cat.name ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory(cat.name)}
+                >
+                  {cat.name}
+                </button>
+              ))}
             </div>
           </Reveal>
+
+          {/* Featured Post */}
+          {featuredPost ? (
+            <Reveal width="100%" direction="up" delay={0.2} distance={40}>
+              <div className="featured-post glass">
+                <Link href={`/blog/${featuredPost._id || featuredPost.id}`} className="featured-image">
+                  <Image 
+                    src={featuredPost.thumbnail || featuredPost.image || "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1632&auto=format&fit=crop"} 
+                    alt={featuredPost.title} 
+                    width={1200} 
+                    height={600} 
+                    priority
+                    className="object-cover"
+                  />
+                </Link>
+                <div className="featured-content">
+                  <span className="blog-category">{featuredPost.categoryId?.name || "AI Technology"}</span>
+                  <span className="blog-date">
+                    {featuredPost.createdAt ? new Date(featuredPost.createdAt).toLocaleDateString('vi-VN') : featuredPost.date || "March 20, 2026"}
+                  </span>
+                  <h2 className="featured-title">
+                    <Link href={`/blog/${featuredPost._id || featuredPost.id}`}>{featuredPost.title}</Link>
+                  </h2>
+                  <p className="featured-excerpt">{featuredPost.excerpt || featuredPost.description || "Explore how the next generation of AI agents will seamlessly navigate between data processing."}</p>
+                  <Link href={`/blog/${featuredPost._id || featuredPost.id}`} className="btn-primary skew-btn">
+                    <span>Read Featured Post</span>
+                  </Link>
+                </div>
+              </div>
+            </Reveal>
+          ) : (
+            <div className="text-center py-40">
+              <p className="text-gray-400">No posts found in this category.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -90,8 +140,15 @@ export default function BlogPage() {
         <div className="container">
           <div className="blog-grid">
             {remainingPosts.map((post, index) => (
-              <Reveal key={post.slug} delay={index * 0.1} direction="up" distance={30}>
-                <BlogCard {...post} />
+              <Reveal key={post._id || post.id} delay={index * 0.1} direction="up" distance={30}>
+                <BlogCard 
+                  category={post.categoryId?.name || "AI Technology"}
+                  date={post.createdAt ? new Date(post.createdAt).toLocaleDateString('vi-VN') : post.date || "March 20, 2026"}
+                  title={post.title}
+                  excerpt={post.excerpt || post.description || ""}
+                  image={post.thumbnail || post.image || "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=1632&auto=format&fit=crop"}
+                  id={post._id || post.id}
+                />
               </Reveal>
             ))}
           </div>
@@ -102,4 +159,5 @@ export default function BlogPage() {
     </main>
   );
 }
+
 

@@ -13,7 +13,7 @@ api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('accessToken');
-      if (token) {
+      if (token && token !== 'undefined' && token !== 'null') {
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
@@ -28,9 +28,21 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    const status = error.response?.status;
     const message = error.response?.data?.message || 'Đã có lỗi xảy ra. Vui lòng thử lại sau.';
-    // Handle specific error codes if needed
-    return Promise.reject(new Error(message));
+    
+    // Tự động xử lý lỗi 401: Xóa storage nếu không phải route login
+    if (status === 401 && typeof window !== 'undefined') {
+      localStorage.clear();
+      // Tùy chọn: force reload hoặc redirect nếu cần
+      if (!window.location.pathname.includes('/login')) {
+         window.location.href = '/login';
+      }
+    }
+
+    // Gắn message vào đối tượng error và reject
+    error.message = message;
+    return Promise.reject(error);
   }
 );
 

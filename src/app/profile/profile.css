@@ -129,9 +129,19 @@
   font-weight: 800;
   margin: 0;
   color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.profile-username {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  margin: 4px 0 16px;
+  opacity: 0.7;
 }
 
 .profile-role-badge {
+  margin-top: 16px;
   display: inline-block;
   padding: 4px 12px;
   background: rgba(0, 243, 255, 0.1);
@@ -205,7 +215,7 @@
 
 .btn-workspace-link {
   background: var(--primary);
-  color: white;
+  color: rgb(12, 11, 11);
   padding: 16px 32px;
   border-radius: 16px;
   font-weight: 700;

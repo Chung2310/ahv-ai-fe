@@ -42,9 +42,9 @@ export default function WorkspacePage() {
 
       // Fetch fresh user data
       try {
-        const response = await api.get('/api/v1/users/me');
+        const response = await api.get('/api/v1/auths/me');
         if (response.data.success) {
-          const freshUser = response.data.data;
+          const freshUser = response.data.data.user;
           setUser(freshUser);
           localStorage.setItem('user', JSON.stringify(freshUser));
         }
