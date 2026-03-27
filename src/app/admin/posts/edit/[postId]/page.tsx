@@ -13,10 +13,11 @@ export default function EditPost({ params }: { params: Promise<{ postId: string 
   const [formData, setFormData] = useState({
     title: '',
     content: '',
-    thumbnail: '',
+    image: '',
     categoryId: '',
     status: 'published',
   });
+  const [originalData, setOriginalData] = useState<any>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -50,13 +51,15 @@ export default function EditPost({ params }: { params: Promise<{ postId: string 
             catId = typeof post.categoryId === 'string' ? post.categoryId : (post.categoryId._id || post.categoryId.id || '');
           }
 
-          setFormData({
+          const initialData = {
             title: post.title,
             content: post.content,
-            thumbnail: post.thumbnail || '',
+            image: post.image || post.thumbnail || '',
             categoryId: catId,
             status: post.status || 'published',
-          });
+          };
+          setFormData(initialData);
+          setOriginalData(initialData);
         }
       } catch (err: any) {
         console.error('Failed to fetch data', err);
@@ -78,7 +81,7 @@ export default function EditPost({ params }: { params: Promise<{ postId: string 
     try {
       const { uploadToCloudinary } = await import('@/lib/cloudinary');
       const url = await uploadToCloudinary(file);
-      setFormData(prev => ({ ...prev, thumbnail: url }));
+      setFormData(prev => ({ ...prev, image: url }));
     } catch (err: any) {
       setError(err.message || 'Lỗi khi upload ảnh. Vui lòng thử lại.');
     } finally {
@@ -97,7 +100,18 @@ export default function EditPost({ params }: { params: Promise<{ postId: string 
     setError('');
 
     try {
-      await api.put(`/api/v1/posts/${postId}`, formData);
+      const payload: any = {};
+      const finalImage = formData.image || 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+      
+      if (formData.title !== originalData?.title) payload.title = formData.title;
+      if (formData.content !== originalData?.content) payload.content = formData.content;
+      if (finalImage !== (originalData?.image || 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')) payload.image = finalImage;
+      if (formData.categoryId !== originalData?.categoryId) payload.categoryId = formData.categoryId;
+      if (formData.status !== originalData?.status) payload.status = formData.status;
+
+      if (Object.keys(payload).length > 0) {
+        await api.put(`/api/v1/posts/${postId}`, payload);
+      }
       router.push('/admin/posts');
     } catch (err: any) {
       setError(err.message || 'Failed to update post');
@@ -200,9 +214,9 @@ export default function EditPost({ params }: { params: Promise<{ postId: string 
               <div style={{ display: 'flex', gap: '10px' }}>
                 <input 
                   type="text" 
-                  name="thumbnail" 
+                  name="image" 
                   className="admin-form-input" 
-                  value={formData.thumbnail}
+                  value={formData.image}
                   onChange={handleChange}
                 />
                 <label className="admin-btn admin-btn-secondary" style={{ padding: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', minWidth: '120px' }}>
@@ -210,9 +224,9 @@ export default function EditPost({ params }: { params: Promise<{ postId: string 
                   <input type="file" hidden accept="image/*" onChange={handleImageUpload} disabled={uploading} />
                 </label>
               </div>
-              {formData.thumbnail && (
+              {formData.image && (
                 <div style={{ marginTop: '12px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--glass-border)' }}>
-                  <img src={formData.thumbnail} alt="Preview" style={{ width: '100%', display: 'block' }} />
+                  <img src={formData.image} alt="Preview" style={{ width: '100%', display: 'block' }} />
                 </div>
               )}
             </div>

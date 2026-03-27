@@ -33,7 +33,7 @@ export default function AdminPosts() {
     
     try {
       await api.delete(`/api/v1/posts/${id}`);
-      setPosts(posts.filter(p => (p._id || p.id) !== id));
+      fetchPosts();
     } catch (error) {
       alert('Failed to delete post');
     }

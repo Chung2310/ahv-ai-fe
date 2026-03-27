@@ -13,13 +13,13 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
 
   formData.append('upload_preset', uploadPreset);
   
-  const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+  const url = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
 
   try {
     const response = await axios.post(url, formData);
     return response.data.secure_url;
   } catch (error) {
     console.error('Lỗi khi upload lên Cloudinary:', error);
-    throw new Error('Không thể upload ảnh, vui lòng thử lại.');
+    throw new Error('Không thể upload tệp tin, vui lòng thử lại.');
   }
 };

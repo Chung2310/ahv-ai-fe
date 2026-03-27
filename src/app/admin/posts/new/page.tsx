@@ -11,7 +11,7 @@ export default function NewPost() {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
-    thumbnail: '',
+    image: '',
     categoryId: '',
     status: 'published',
   });
@@ -47,7 +47,7 @@ export default function NewPost() {
     try {
       const { uploadToCloudinary } = await import('@/lib/cloudinary');
       const url = await uploadToCloudinary(file);
-      setFormData(prev => ({ ...prev, thumbnail: url }));
+      setFormData(prev => ({ ...prev, image: url }));
     } catch (err: any) {
       setError(err.message || 'Lỗi khi upload ảnh. Vui lòng thử lại.');
     } finally {
@@ -68,7 +68,11 @@ export default function NewPost() {
     setError('');
 
     try {
-      await api.post('/api/v1/posts', formData);
+      const payload = {
+        ...formData,
+        image: formData.image || 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+      };
+      await api.post('/api/v1/posts', payload);
       router.push('/admin/posts');
     } catch (err: any) {
       setError(err.message || 'Failed to create post');
@@ -166,10 +170,10 @@ export default function NewPost() {
               <div style={{ display: 'flex', gap: '10px' }}>
                 <input 
                   type="text" 
-                  name="thumbnail" 
+                  name="image" 
                   className="admin-form-input" 
                   placeholder="https://..." 
-                  value={formData.thumbnail}
+                  value={formData.image}
                   onChange={handleChange}
                 />
                 <label className="admin-btn admin-btn-secondary" style={{ padding: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', minWidth: '120px' }}>
@@ -177,9 +181,9 @@ export default function NewPost() {
                   <input type="file" hidden accept="image/*" onChange={handleImageUpload} disabled={uploading} />
                 </label>
               </div>
-              {formData.thumbnail && (
+              {formData.image && (
                 <div style={{ marginTop: '12px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--glass-border)' }}>
-                  <img src={formData.thumbnail} alt="Preview" style={{ width: '100%', display: 'block' }} />
+                  <img src={formData.image} alt="Preview" style={{ width: '100%', display: 'block' }} />
                 </div>
               )}
             </div>
