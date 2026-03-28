@@ -71,8 +71,9 @@ const Header = () => {
           <Magnetic><Link href="/models" className={pathname === '/models' ? 'active' : ''}>Models</Link></Magnetic>
           <Magnetic><Link href="/workspace" className={pathname === '/workspace' ? 'active' : ''}>Workspace</Link></Magnetic>
           <Magnetic><Link href="/docs" className={pathname === '/docs' ? 'active' : ''}>Docs</Link></Magnetic>
-          <Magnetic><Link href="/pricing" className="nav-link">Pricing</Link></Magnetic>
-          <Magnetic><Link href="/blog" className="nav-link">Blog</Link></Magnetic>
+          <Magnetic><Link href="/pricing" className={pathname === '/pricing' ? 'active' : ''}>Pricing</Link></Magnetic>
+          <Magnetic><Link href="/blog" className={pathname === '/blog' ? 'active' : ''}>Blog</Link></Magnetic>
+          <Magnetic><Link href="/contact" className={pathname === '/contact' ? 'active' : ''}>Contact</Link></Magnetic>
           {(user?.role === 'admin' || user?.role === 'superadmin') && (
             <Magnetic><Link href="/admin" className="nav-link admin-link-highlight">Admin</Link></Magnetic>
           )}

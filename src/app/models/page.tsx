@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import ModelCard from '@/components/ModelCard/ModelCard';
-import { CATEGORIES } from '@/data/models';
 import api from '@/lib/api';
 import './models.css';
 
@@ -84,7 +83,6 @@ export default function ModelsPage() {
                     description={m.description || ''}
                     image={m.image || 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800'}
                     price={m.price}
-                    tags={['AI', 'Technology']}
                     speed={m.status === 'active' ? 'Active' : 'Offline'}
                     delay={idx * 0.05}
                   />

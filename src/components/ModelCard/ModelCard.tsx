@@ -13,12 +13,11 @@ interface ModelCardProps {
   description: string;
   image: string;
   price?: string;
-  tags: string[];
   speed?: string;
   delay?: number;
 }
 
-const ModelCard: React.FC<ModelCardProps> = ({ id, title, provider, description, image, price, tags, speed, delay = 0 }) => {
+const ModelCard: React.FC<ModelCardProps> = ({ id, title, provider, description, image, price, speed, delay = 0 }) => {
   const router = useRouter();
 
   const handleGoToWorkspace = () => {
@@ -66,13 +65,6 @@ const ModelCard: React.FC<ModelCardProps> = ({ id, title, provider, description,
             )}
           </div>
           <p className="model-card-desc">{description}</p>
-          <div className="model-card-tags">
-            {tags.map((tag, idx) => (
-              <span key={idx} className="model-tag">
-                {tag}
-              </span>
-            ))}
-          </div>
           <div className="model-card-actions">
             <button className="btn-model-primary" onClick={handleGoToWorkspace}>Workspace</button>
             <button className="btn-model-outline">API Docs</button>

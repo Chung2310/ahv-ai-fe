@@ -17,9 +17,9 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       try {
         const [postsRes, catsRes, usersRes] = await Promise.all([
-          api.get('/api/v1/posts'),
-          api.get('/api/v1/categories'),
-          api.get('/api/v1/users')
+          api.get('/api/v1/posts', { headers: { 'Cache-Control': 'no-cache' } }),
+          api.get('/api/v1/categories', { headers: { 'Cache-Control': 'no-cache' } }),
+          api.get('/api/v1/users', { headers: { 'Cache-Control': 'no-cache' } })
         ]);
 
         const postData = postsRes.data.data?.posts || postsRes.data.data || [];

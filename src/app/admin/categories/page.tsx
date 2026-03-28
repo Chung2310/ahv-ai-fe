@@ -14,7 +14,9 @@ export default function AdminCategories() {
 
   const fetchCategories = async () => {
     try {
-      const response = await api.get('/api/v1/categories');
+      const response = await api.get('/api/v1/categories', {
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
       console.log('Categories API Response:', response.data);
       if (response.data.success) {
         const data = response.data.data?.categories || response.data.data || [];

@@ -62,7 +62,7 @@ const Reveal: React.FC<RevealProps> = ({
           willChange: "transform, opacity",
           backfaceVisibility: "hidden",
           WebkitBackfaceVisibility: "hidden",
-          transform: "translateZ(0)"
+          transform: "translateZ(0)", display: "flex", justifyContent: "center"
         }}
       >
         {children}

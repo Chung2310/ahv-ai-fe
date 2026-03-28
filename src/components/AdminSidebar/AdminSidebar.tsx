@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiGrid, FiFileText, FiLayers, FiUsers, FiSettings, FiArrowLeft, FiCheckSquare, FiCreditCard, FiCpu } from 'react-icons/fi';
+import { FiGrid, FiFileText, FiLayers, FiUsers, FiSettings, FiArrowLeft, FiCheckSquare, FiCreditCard, FiCpu, FiMessageSquare } from 'react-icons/fi';
 
 const AdminSidebar = () => {
   const pathname = usePathname();
@@ -15,6 +15,7 @@ const AdminSidebar = () => {
     { title: 'Users', icon: <FiUsers />, path: '/admin/users' },
     { title: 'Tasks', icon: <FiCheckSquare />, path: '/admin/tasks' },
     { title: 'Wallets', icon: <FiCreditCard />, path: '/admin/wallets' },
+    { title: 'Tickets', icon: <FiMessageSquare />, path: '/admin/tickets' },
     { title: 'AI Models', icon: <FiCpu />, path: '/admin/aimodels' },
     { title: 'Settings', icon: <FiSettings />, path: '/admin/settings' },
   ];

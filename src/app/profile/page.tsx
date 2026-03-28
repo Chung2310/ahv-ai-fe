@@ -131,6 +131,11 @@ export default function ProfilePage() {
                     Open AI Workspace
                   </Link>
                 </Magnetic>
+                <Magnetic>
+                  <Link href="/history" className="btn-history-link">
+                    Task History
+                  </Link>
+                </Magnetic>
                 <button className="btn-logout-alt" onClick={handleLogout}>
                   Sign Out
                 </button>

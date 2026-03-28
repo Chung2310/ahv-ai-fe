@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ImageComponent from 'next/image';
 import Link from 'next/link';
 import Reveal from '@/components/Reveal/Reveal';
@@ -11,6 +11,7 @@ import './workspace.css';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import { FiImage, FiCode, FiCpu, FiCheckCircle, FiAlertCircle, FiLoader } from 'react-icons/fi';
 
 function ModelHeaderSection({ model: m }: { model: any }) {
   if (!m) return null;
@@ -36,9 +37,31 @@ function ModelHeaderSection({ model: m }: { model: any }) {
   );
 }
 
-function ResultDisplay({ result, generating, modelImage }: { result: string | null, generating: boolean, modelImage?: string | null }) {
+function ResultDisplay({ result, generating, modelImage, activeTab, lastResponse }: { 
+  result: string | null, 
+  generating: boolean, 
+  modelImage?: string | null,
+  activeTab: 'visual' | 'json',
+  lastResponse: any
+}) {
   const isUrl = result?.startsWith('http') || result?.startsWith('data:image') || result?.startsWith('data:video');
-  const isError = result && !isUrl && (result.includes('error') || result.includes('denied') || result.includes('Internal Server Error'));
+  const isError = result === 'error';
+
+  if (activeTab === 'json') {
+    return (
+      <div className="result-stage json-view">
+        <div className="json-container glass p-24">
+          <div className="json-header flex-between mb-16">
+            <span className="text-xs font-bold text-primary uppercase tracking-widest">API Response Object</span>
+            {lastResponse && <span className="status-badge success">Received</span>}
+          </div>
+          <pre className="json-content">
+            {lastResponse ? JSON.stringify(lastResponse, null, 2) : "// No response data yet. Initiate a generation to see the result."}
+          </pre>
+        </div>
+      </div>
+    );
+  }
 
   // Loading State
   if (generating) {
@@ -54,6 +77,11 @@ function ResultDisplay({ result, generating, modelImage }: { result: string | nu
           <div className="loading-bar-container">
             <div className="loading-bar-progress"></div>
           </div>
+          {lastResponse?.data?.status && (
+             <div className="mt-20 px-16 py-8 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-primary animate-pulse">
+               Current Status: {lastResponse.data.status.toUpperCase()}
+             </div>
+          )}
         </div>
       </div>
     );
@@ -79,10 +107,10 @@ function ResultDisplay({ result, generating, modelImage }: { result: string | nu
     return (
       <div className="result-stage error">
         <div className="error-card">
-          <div className="error-icon">⚠️</div>
+          <div className="error-icon text-red-500">⚠️</div>
           <h4>Generation Failed</h4>
-          <p>There was an issue processing your request. Please check your configuration or try again.</p>
-          <button className="view-log-btn" onClick={() => console.log(result)}>View Technical Logs</button>
+          <p>There was an issue processing your request. Please check the JSON response for details.</p>
+          <button className="view-log-btn" onClick={() => console.log(lastResponse)}>View Technical Logs</button>
         </div>
       </div>
     );
@@ -107,7 +135,7 @@ function ResultDisplay({ result, generating, modelImage }: { result: string | nu
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
             </div>
             <h3>AI Generation Ready</h3>
-            <p>Configure your model on the sidebar and enter a prompt to begin.</p>
+            <p>Configure your model on the sidebar and initiate a generation.</p>
           </div>
         )}
       </div>
@@ -123,30 +151,75 @@ function WorkspaceContent() {
   const [selectedModel, setSelectedModel] = useState(modelIdFromUrl || '');
   const [apiModels, setApiModels] = useState<any[]>([]);
   const [dynamicPayload, setDynamicPayload] = useState<any>({});
-  const [prompt, setPrompt] = useState('');
+  const [fullModelPayload, setFullModelPayload] = useState<any>(null);
   const [generating, setGenerating] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [lastResponse, setLastResponse] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'visual' | 'json'>('visual');
   const [user, setUser] = useState<any>(null);
+  
+  const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fullPrompt = 'An astronaut riding a horse on the moon, cinematic anime style';
+  const stopPolling = () => {
+    if (pollTimerRef.current) {
+      clearInterval(pollTimerRef.current);
+      pollTimerRef.current = null;
+    }
+  };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    return () => stopPolling();
+  }, []);
+
+  const getMe = async () => {
+    try {
+      const response = await api.get('/api/v1/auths/me');
+      if (response.data.success) {
+        const freshUser = response.data.data.user;
+        setUser((prev: any) => ({ ...prev, ...freshUser }));
+        localStorage.setItem('user', JSON.stringify(freshUser));
+
+        try {
+          const walletRes = await api.get(`/api/v1/wallets/me`);
+          if (walletRes.data.success && walletRes.data.data) {
+            const balance = walletRes.data.data.balance || 0;
+            setUser((prev: any) => ({ ...prev, balance }));
+          }
+        } catch (walletErr) {
+          console.error('Failed to fetch wallet balance', walletErr);
+        }
+      }
+    } catch (err: any) {
+      console.error('Failed to fetch user in Workspace', err);
+      if (err.response?.status === 401) {
+        localStorage.clear();
+        router.push('/login');
+        return;
+      }
+    }
+  };
+
+  useEffect(() => {
     const initWorkspace = async () => {
-      // Check authentication
       const token = localStorage.getItem('accessToken');
       if (!token) {
         router.push('/login');
         return;
       }
 
-      // Fetch models from API
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (e) {}
+      }
+
       try {
         const modelsRes = await api.get('/api/v1/aimodels');
         if (modelsRes.data.success) {
           const fetchedModels = modelsRes.data.data || [];
           setApiModels(fetchedModels);
           
-          // If no model selected yet, pick first one
           if (!selectedModel && fetchedModels.length > 0) {
             setSelectedModel(fetchedModels[0]._id || fetchedModels[0].id);
           }
@@ -155,44 +228,19 @@ function WorkspaceContent() {
         console.error('Failed to fetch models in Workspace', err);
       }
 
-      // Fetch fresh user data
-      try {
-        const response = await api.get('/api/v1/auths/me');
-        if (response.data.success) {
-          const freshUser = response.data.data.user;
-          setUser(freshUser);
-          localStorage.setItem('user', JSON.stringify(freshUser));
-        }
-      } catch (err: any) {
-        console.error('Failed to fetch user in Workspace', err);
-        if (err.response?.status === 401) {
-          localStorage.clear();
-          router.push('/login');
-          return;
-        }
-      }
-
-      // Typewriter effect
-      let i = 0;
-      const interval = setInterval(() => {
-        setPrompt(fullPrompt.slice(0, i));
-        i++;
-        if (i > fullPrompt.length) clearInterval(interval);
-      }, 30);
-      return () => clearInterval(interval);
+      await getMe();
     };
 
     initWorkspace();
   }, [router, modelIdFromUrl]);
 
-  // Handle payload parsing when selected model changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedModel && apiModels.length > 0) {
       const model = apiModels.find(m => (m._id || m.id) === selectedModel);
       if (model && model.payload) {
         try {
           const parsed = typeof model.payload === 'string' ? JSON.parse(model.payload) : model.payload;
-          // According to user: payload structure has a nested "payload" object for editable fields
+          setFullModelPayload(parsed);
           if (parsed && parsed.payload) {
             setDynamicPayload(parsed.payload);
           } else {
@@ -201,12 +249,95 @@ function WorkspaceContent() {
         } catch (e) {
           console.error('Failed to parse model payload', e);
           setDynamicPayload({});
+          setFullModelPayload(null);
         }
       } else {
         setDynamicPayload({});
+        setFullModelPayload(null);
       }
     }
   }, [selectedModel, apiModels]);
+
+  const pollTaskStatus = async (taskId: string) => {
+    stopPolling();
+    
+    pollTimerRef.current = setInterval(async () => {
+      try {
+        const response = await api.get(`/api/v1/tasks/${taskId}`);
+        if (response.data.success) {
+          const task = response.data.data;
+          setLastResponse(response.data);
+          
+          if (task.status === 'succeeded') {
+            const finalUrl = task.result?.url || task.resultUrl;
+            setResultImage(finalUrl);
+            setGenerating(false);
+            stopPolling();
+            getMe(); // Update balance
+          } else if (task.status === 'failed') {
+            setResultImage('error');
+            setGenerating(false);
+            stopPolling();
+          }
+        }
+      } catch (err) {
+        console.error('Polling Error:', err);
+        // We don't stop on generic error, maybe it's a network glitch
+      }
+    }, 3000);
+  };
+
+  const handleGenerate = async () => {
+    setGenerating(true);
+    setResultImage(null);
+    setLastResponse(null);
+    setActiveTab('visual');
+    stopPolling();
+    
+    try {
+      // Reconstruct the full payload structure keeping system fields (task, webhook)
+      // and merging the edited dynamicPayload into the nested 'payload' object
+      const reconstructedPayload = {
+        ...fullModelPayload,
+        payload: {
+          ...fullModelPayload?.payload,
+          ...dynamicPayload
+        }
+      };
+
+      const payloadRequest = {
+        aiModelId: selectedModel,
+        payload: reconstructedPayload
+      };
+
+      const response = await api.post('/api/v1/tasks', payloadRequest);
+      setLastResponse(response.data);
+      
+      if (response.data.success) {
+        const task = response.data.data;
+        if (task.status === 'succeeded') {
+          const finalUrl = task.result?.url || task.resultUrl;
+          setResultImage(finalUrl);
+          setGenerating(false);
+          getMe();
+        } else if (task.status === 'failed') {
+          setResultImage('error');
+          setGenerating(false);
+        } else {
+          // Start polling for pending/processing tasks
+          pollTaskStatus(task._id);
+        }
+      } else {
+        setResultImage('error');
+        setGenerating(false);
+      }
+    } catch (err: any) {
+      console.error('Generation Failed:', err);
+      setLastResponse(err.response?.data || { error: err.message });
+      setResultImage('error');
+      setGenerating(false);
+    }
+  };
 
   const handleDynamicInputChange = (key: string, value: any) => {
     setDynamicPayload((prev: any) => ({
@@ -215,20 +346,9 @@ function WorkspaceContent() {
     }));
   };
 
-  const handleGenerate = () => {
-    setGenerating(true);
-    // Simulate API call
-    setTimeout(() => {
-      setResultImage(`https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=800&q=80`);
-      setGenerating(false);
-    }, 2000);
-  };
-
   return (
     <Reveal>
       <main className="workspace-page">
-        {/* Advanced Background System */}
-
         <header className="workspace-header-premium">
           <div className="header-content-inner">
             <Link href="/" className="back-btn-ws-new">
@@ -245,7 +365,19 @@ function WorkspaceContent() {
 
             <div className="header-right-actions">
               <div className="user-status-minimal">
-                <span className="user-name-ws">{user?.fullName || 'Explorer'}</span>
+                <div className="user-balance-ws">
+                  <div className="balance-icon-ws">💎</div>
+                  <div className="balance-info-ws">
+                    <span className="balance-label-ws">Credits</span>
+                    <div className="balance-value-ws">
+                      {(user?.balance ?? 0).toLocaleString()} <span>COINS</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="user-info-ws">
+                  <span className="user-name-ws">{user?.fullName || user?.name || user?.username || 'Explorer'}</span>
+                  <span className="user-email-ws">{user?.email || 'No email synced'}</span>
+                </div>
                 <div className="user-avatar-ws">
                   {user?.avatar ? <img src={user.avatar} alt="" /> : <span>{user?.fullName?.[0] || 'A'}</span>}
                 </div>
@@ -286,7 +418,7 @@ function WorkspaceContent() {
                       </label>
                       <input 
                         type={typeof value === 'number' ? 'number' : 'text'}
-                        className="workspace-select" 
+                        className="workspace-input" 
                         value={value as any}
                         onChange={(e) => handleDynamicInputChange(key, typeof value === 'number' ? Number(e.target.value) : e.target.value)}
                         placeholder={`Enter ${key}...`}
@@ -303,12 +435,29 @@ function WorkspaceContent() {
                 onClick={handleGenerate}
                 disabled={generating}
               >
-                {generating ? 'Processing...' : 'Generate Now'}
+                {generating ? <span className="flex items-center justify-center gap-10"><FiLoader className="animate-spin" /> Processing...</span> : 'Generate Now'}
               </button>
             </Magnetic>
           </aside>
 
           <div className="workspace-main">
+             <div className="workspace-tabs-container mb-24">
+               <div className="workspace-tabs">
+                  <button 
+                    className={`tab-item ${activeTab === 'visual' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('visual')}
+                  >
+                    <FiImage /> <span>Visual Preview</span>
+                  </button>
+                  <button 
+                    className={`tab-item ${activeTab === 'json' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('json')}
+                  >
+                    <FiCode /> <span>Response JSON</span>
+                  </button>
+               </div>
+            </div>
+
             {/* Model Header */}
             {selectedModel && apiModels.find(m => (m._id || m.id) === selectedModel) && (
               <ModelHeaderSection model={apiModels.find(m => (m._id || m.id) === selectedModel)} />
@@ -317,30 +466,10 @@ function WorkspaceContent() {
             <ResultDisplay 
               result={resultImage} 
               generating={generating} 
+              activeTab={activeTab}
+              lastResponse={lastResponse}
               modelImage={apiModels.find(m => (m._id || m.id) === selectedModel)?.image}
             />
-
-            <div className="workspace-input-area w-full max-w-[1000px]">
-              <textarea 
-                className="workspace-textarea"
-                placeholder="Describe your idea in detail..."
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-                    handleGenerate();
-                  }
-                }}
-              ></textarea>
-              <div className="input-footer">
-                <div className="shortcut-tip">
-                  <span className="key-box">CTRL</span> + <span className="key-box">ENTER</span> to generate
-                </div>
-                <div className="prompt-meta">
-                  {prompt.length} / 2000
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </main>

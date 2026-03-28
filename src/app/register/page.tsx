@@ -79,6 +79,7 @@ export default function RegisterPage() {
               placeholder="JohnDoe123" 
               value={formData.name}
               onChange={handleChange}
+              autoComplete="off"
               required 
             />
           </div>
@@ -91,6 +92,7 @@ export default function RegisterPage() {
               placeholder="name@company.com" 
               value={formData.email}
               onChange={handleChange}
+              autoComplete="email"
               required 
             />
           </div>
@@ -103,6 +105,7 @@ export default function RegisterPage() {
               placeholder="Min. 8 characters" 
               value={formData.password}
               onChange={handleChange}
+              autoComplete="new-password"
               required 
             />
           </div>

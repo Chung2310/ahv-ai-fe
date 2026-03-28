@@ -21,7 +21,9 @@ export default function AdminUsers() {
 
   const fetchUsers = async () => {
     try {
-      const response = await api.get('/api/v1/users');
+      const response = await api.get('/api/v1/users', {
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
       console.log('Users API Response:', response.data);
       if (response.data.success) {
         setUsers(response.data.data || []);

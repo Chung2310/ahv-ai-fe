@@ -76,13 +76,13 @@
   gap: 12px;
 }
 
-.section-subtitle::before {
+/* .section-subtitle::before {
   content: '';
   width: 4px;
   height: 24px;
   background: var(--primary);
   border-radius: 2px;
-}
+} */
 
 /* Tables */
 .table-container {

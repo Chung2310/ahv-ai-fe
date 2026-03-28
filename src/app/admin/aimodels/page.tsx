@@ -43,9 +43,12 @@ export default function AdminAIModels() {
   const fetchModels = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await api.get('/api/v1/aimodels');
+      const response = await api.get('/api/v1/aimodels', {
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
       if (response.data.success) {
-        setModels(response.data.data || []);
+        const data = response.data.data?.aimodels || response.data.data || [];
+        setModels(Array.isArray(data) ? data : []);
       }
     } catch (err: any) {
       console.error('Failed to fetch AI models', err);

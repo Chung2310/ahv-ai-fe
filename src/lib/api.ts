@@ -18,13 +18,6 @@ api.interceptors.request.use(
       }
     }
 
-    // Prevents GET requests from being cached
-    if (config.method === 'get') {
-      config.params = {
-        ...config.params,
-        _t: Date.now(),
-      };
-    }
     
     return config;
   },
@@ -33,20 +26,83 @@ api.interceptors.request.use(
   }
 );
 
+let isRefreshing = false;
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
 // Response interceptor for API calls
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
     const status = error.response?.status;
     const message = error.response?.data?.message || 'Đã có lỗi xảy ra. Vui lòng thử lại sau.';
-    
-    // Tự động xử lý lỗi 401: Xóa storage nếu không phải route login
-    if (status === 401 && typeof window !== 'undefined') {
-      localStorage.clear();
-      // Tùy chọn: force reload hoặc redirect nếu cần
-      if (!window.location.pathname.includes('/login')) {
-         window.location.href = '/login';
+
+    // Nếu lỗi 401 và không phải đang gọi API login/refresh
+    if (status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auths/login') && !originalRequest.url.includes('/auths/refreshToken')) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return api(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
       }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const response = await api.post('/api/v1/auths/refresh');
+        const { token, user } = response.data.data;
+
+        localStorage.setItem('accessToken', token);
+        if (user) localStorage.setItem('user', JSON.stringify(user));
+
+        api.defaults.headers.common.Authorization = `Bearer ${token}`;
+        originalRequest.headers.Authorization = `Bearer ${token}`;
+
+        processQueue(null, token);
+        return api(originalRequest);
+      } catch (refreshError: any) {
+        processQueue(refreshError, null);
+        
+        // Refresh token cũng hết hạn -> Log out
+        if (typeof window !== 'undefined') {
+          localStorage.clear();
+          if (!window.location.pathname.includes('/login')) {
+            window.location.href = '/login';
+          }
+        }
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    // Tự động xử lý lỗi 401 cho các trường hợp không thể refresh (login/refresh bị lỗi)
+    if (status === 401 && typeof window !== 'undefined') {
+       if (!originalRequest.url.includes('/auths/login')) {
+          localStorage.clear();
+          if (!window.location.pathname.includes('/login')) {
+            window.location.href = '/login';
+          }
+       }
     }
 
     // Gắn message vào đối tượng error và reject

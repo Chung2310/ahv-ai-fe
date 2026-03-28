@@ -35,9 +35,13 @@ export default function AdminTasks() {
   const fetchTasks = useCallback(async (isSilent = false) => {
     if (!isSilent) setLoading(true);
     try {
-      const response = await api.get('/api/v1/tasks');
+      const response = await api.get('/api/v1/tasks', {
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
+      console.log('Tasks API Response:', response.data);
       if (response.data.success) {
-        setTasks(response.data.data || []);
+        const data = response.data.data?.tasks || response.data.data || [];
+        setTasks(Array.isArray(data) ? data : []);
       }
     } catch (err: any) {
       console.error('Failed to fetch tasks', err);

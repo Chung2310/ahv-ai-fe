@@ -1,30 +1,74 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Reveal from '../Reveal/Reveal';
+import api from '@/lib/api';
 import './ModelPricing.css';
+
+interface ModelItem {
+  name: string;
+  price: string;
+  unit: string;
+}
+
+interface GroupedModels {
+  image: ModelItem[];
+  video: ModelItem[];
+  text: ModelItem[];
+}
 
 const ModelPricing = () => {
   const [activeTab, setActiveTab] = useState('image');
+  const [models, setModels] = useState<GroupedModels>({ image: [], video: [], text: [] });
+  const [loading, setLoading] = useState(true);
 
-  const models = {
-    image: [
-      { name: "Flux Schnell", price: "$0.0015", unit: "image" },
-      { name: "Flux Dev", price: "$0.025", unit: "image" },
-      { name: "Flux Pro", price: "$0.05", unit: "image" },
-      { name: "Stable Diffusion 3", price: "$0.03", unit: "image" },
-    ],
-    video: [
-      { name: "Luma Dream Machine", price: "$0.15", unit: "s" },
-      { name: "Kling AI", price: "$0.20", unit: "s" },
-      { name: "Runway Gen-3", price: "$0.25", unit: "s" },
-    ],
-    text: [
-      { name: "GPT-4o", price: "$5.00", unit: "1M tokens" },
-      { name: "Claude 3.5 Sonnet", price: "$3.00", unit: "1M tokens" },
-      { name: "Gemini 1.5 Pro", price: "$3.50", unit: "1M tokens" },
-    ]
-  };
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        const response = await api.get('/api/v1/aimodels');
+        if (response.data.success) {
+          const rawModels = response.data.data || [];
+          
+          const grouped: GroupedModels = {
+            image: [],
+            video: [],
+            text: []
+          };
+
+          rawModels.forEach((m: any) => {
+            const nameLower = (m.name || '').toLowerCase();
+            const descLower = (m.description || '').toLowerCase();
+            
+            const modelItem: ModelItem = {
+              name: m.name || 'AI Model',
+              price: m.price ? `$${m.price}` : '$0.00',
+              unit: nameLower.includes('token') || descLower.includes('token') ? '1M tokens' : 'request/image'
+            };
+
+            // Heuristic categorization
+            if (nameLower.includes('video') || nameLower.includes('kling') || nameLower.includes('luma')) {
+              grouped.video.push(modelItem);
+            } else if (nameLower.includes('gpt') || nameLower.includes('claude') || nameLower.includes('gemini') || nameLower.includes('text')) {
+              grouped.text.push(modelItem);
+            } else {
+              // Default to image for others as it's the primary provider focus
+              grouped.image.push(modelItem);
+            }
+          });
+
+          setModels(grouped);
+        }
+      } catch (err) {
+        console.error('Failed to fetch pricing models:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchModels();
+  }, []);
+
+  const tabs = Object.keys(models) as Array<keyof GroupedModels>;
 
   return (
     <section className="model-pricing-section">
@@ -37,36 +81,52 @@ const ModelPricing = () => {
         </Reveal>
 
         <div className="model-tabs">
-          {Object.keys(models).map(tab => (
+          {tabs.map(tab => (
             <button 
               key={tab}
               className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
               onClick={() => setActiveTab(tab)}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {models[tab].length > 0 && <span className="tab-count">{models[tab].length}</span>}
             </button>
           ))}
         </div>
 
         <div className="model-table-wrapper">
-          <table className="model-table">
-            <thead>
-              <tr>
-                <th>Model Name</th>
-                <th>Price</th>
-                <th>Unit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {models[activeTab as keyof typeof models].map((model, index) => (
-                <tr key={model.name}>
-                  <td>{model.name}</td>
-                  <td className="price-cell">{model.price}</td>
-                  <td>per {model.unit}</td>
+          {loading ? (
+            <div className="py-40 text-center">
+              <div className="loading-spinner mx-auto"></div>
+              <p className="mt-20 text-gray-400">Loading model pricing...</p>
+            </div>
+          ) : (
+            <table className="model-table">
+              <thead>
+                <tr>
+                  <th>Model Name</th>
+                  <th>Price</th>
+                  <th>Unit</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {models[activeTab as keyof GroupedModels].length > 0 ? (
+                  models[activeTab as keyof GroupedModels].map((model, index) => (
+                    <tr key={index}>
+                      <td>{model.name}</td>
+                      <td className="price-cell">{model.price}</td>
+                      <td>per {model.unit}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="text-center py-40 text-gray-500">
+                      No {activeTab} models currently available.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </section>
